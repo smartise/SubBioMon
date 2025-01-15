@@ -1,0 +1,37 @@
+---
+title: "eDNA report"
+output: html_notebook
+---
+## Analysis {.tabset .tabset-fade .tabset-pills}
+
+### Albania
+
+### Sardinia {.tabset .tabset-fade .tabset-pills}
+
+#### Aqueduct monthly monitoring {.tabset .tabset-fade .tabset-pills}
+
+##### 2024 {.tabset .tabset-fade .tabset-pills}
+
+###### June 
+
+###### July 
+
+###### August
+
+###### September
+
+###### October
+
+#### Locoli cave
+
+### Luxembourg
+
+```{r, echo=FALSE, results='hide',message=FALSE}
+source("RAW_SEQUENCE/Natrix2_test2/basic2.R")
+```
+
+```{r, echo=FALSE,results='hide', message=FALSE}
+print(a)
+```
+
+
