@@ -1,0 +1,142 @@
+---
+title: "<center>SubBioMon eDNA report<center>"
+output:
+  flexdashboard::flex_dashboard: 
+    orientation: row
+    vertical_layout: scroll
+    theme: 
+      version: 4
+      bootswatch: darkly
+      
+---
+```{r, echo=FALSE, results='hide',message=FALSE}
+library(plotly)
+library(DT)
+library(htmltools)
+library(reactable)
+library(bslib)
+library(thematic)
+```
+
+```{r, line of code, echo=FALSE, results='hide',message=FALSE}
+#source("SARD/SEPT24/NMDS_youtube_OTU.R")
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+source("theme_plot.R")
+source("CSS_style.R")
+```
+
+Locoli {data-navmenu="Sardinia"}
+=====================================
+
+## Row 1 {data-height=700, data-padding=15}
+
+### Map
+
+```{r, echo=FALSE,message=FALSE, fig.align='center'}
+knitr::include_graphics("SARD/cave.png")
+```
+
+### Note
+
+Detected species has been calculated by removing every OTU that had less than 90 query coverage and less than 99% pident. The pident treshold has been chosen following Egeter et al. 2022. The coverage treshold has been chosen arbitrarly
+
+
+## Row 2 {data-width=800, data-padding=15}
+
+### NMDS 
+
+<font size="5"> CO1 </font>
+
+```{r, echo=FALSE, results='hide',message=FALSE, fig.align='center'}
+thematic::thematic_rmd(font = "auto")
+load("SARD/SEPT24/CO1/NMDS.RData")
+print(a)
+```
+
+### Krona
+
+Note that this Krona plot has been made withe the best blast identity possible. Some of the OTUs did not have good blast using NCBI database. For species presence absence refers to the "Detected species" tab
+<br>
+<font size="5"> CO1 </font>
+
+::: {style="background-color: grey; padding: 20px;"}
+```{r, echo=FALSE, results='asis'}
+thematic::thematic_rmd(font = "auto")
+htmltools::tags$iframe(
+  src = "SARD/SEPT24/CO1/krona_plot.html",
+  width = "100%",
+  height = "700px",
+  frameborder = "0"
+)
+```
+:::
+
+## Row 3 {data-height=700, data-width=600}
+
+### Detected Species
+
+```{r, echo=FALSE}
+thematic::thematic_rmd(font = "auto")
+load("SARD/SEPT24/CO1/DETECT_SPECIES.RDATA")
+datatable(DETECT_SPECIES, options = list(
+  pageLength = 10,   # Set the number of rows visible initially
+  scrollY = 500,     # Enable vertical scrolling with a fixed height
+  scrollX = TRUE# Enable horizontal scrolling for wide tables
+), width = "10%")
+```
+
+Aqueduct {data-navmenu="Sardinia"}
+=====================================
+
+## Row 3 {data-height=500, data-padding=15}
+
+### Detected species
+
+
+```{r, echo=FALSE}
+load("SARD_AQ/JUL/CO1/DETECT_SPECIES.RDATA")
+datatable(DETECT_SPECIES)
+```
+
+Sulfur cave {data-navmenu="Albania"}
+=====================================
+
+## Row 1 {data-height=400, data-padding=15}
+
+### Map
+
+### Note
+
+## Row 2 {data-width=200, data-padding=15}
+
+### NMDS
+
+### Krona
+Note that this Krona plot has been made withe the best blast identity possible. Some of the OTUs did not have good blast using NCBI database. For species presence absence refers to the "Detected species" tab
+
+::: {style="background-color: grey; padding: 20px;"}
+```{r, echo=FALSE, results='asis'}
+htmltools::tags$iframe(
+  src = "ALB/CO1/krona_plot.html",
+  width = "100%",
+  height = "700px",
+  frameborder = "0"
+)
+```
+:::
+
+## Row 3 {data-height=500, data-padding=15}
+
+### Detected species 
+
+```{r, echo=FALSE}
+load("ALB/CO1/DETECT_SPECIES.RDATA")
+datatable(DETECT_SPECIES)
+```
+
+
+
+Luxembourg
+=====================================
