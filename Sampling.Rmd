@@ -1,5 +1,5 @@
 ---
-title: "<center>Sampling V2<center>"
+title: "<center>Sampling V1<center>"
 output:
   flexdashboard::flex_dashboard:
     orientation: row
@@ -7,7 +7,7 @@ output:
     theme: 
       version: 4
       bootswatch: minty
-  
+    self_contained: false
 ---
 
 ```{r, echo=FALSE, results='hide',message=FALSE}
@@ -28,14 +28,9 @@ For the sampling protocol we use the eDNA sampling kit from <a href="https://syl
 ## Row 2 {data-height="450" data-padding="15"}
 
 ### Sampling protocol
-<div style="display: flex; justify-content: center; align-items: center; height: 50vh;">
-<iframe width="500" height="281" 
-        src="https://www.youtube.com/embed/mu5TBGr1psM" 
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen>
-</iframe>
-</div>
+```{r, echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/mu5TBGr1psM")
+```
 
 ### Vacuum pump
 
