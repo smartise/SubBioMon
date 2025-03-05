@@ -1,5 +1,5 @@
 ---
-title: "<center>Sampling V1<center>"
+title: "<center>Sampling V2<center>"
 output:
   flexdashboard::flex_dashboard:
     orientation: row
@@ -7,7 +7,7 @@ output:
     theme: 
       version: 4
       bootswatch: minty
-    self_contained: false
+  
 ---
 
 ```{r, echo=FALSE, results='hide',message=FALSE}
