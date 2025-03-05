@@ -24,6 +24,8 @@ library(thematic)
 ## Row 1 {data-height="100," data-padding="15"}
 ### Welcome
 
+Welcome to the <a href="https://sylphium.com/eng/">Sub-BioMon</a> eDNA report website. 
+
 ## Row 2 {data-padding="15"}
 ### Map
 

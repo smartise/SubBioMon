@@ -7,6 +7,7 @@ output:
     theme: 
       version: 4
       bootswatch: minty
+    self_contained: false
 ---
 
 ```{r, echo=FALSE, results='hide',message=FALSE}
@@ -27,16 +28,18 @@ For the sampling protocol we use the eDNA sampling kit from <a href="https://syl
 ## Row 2 {data-height="450" data-padding="15"}
 
 ### Sampling protocol
-
+<div style="display: flex; justify-content: center; align-items: center; height: 50vh;">
 <iframe width="500" height="281" 
         src="https://www.youtube.com/embed/mu5TBGr1psM" 
         frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
         allowfullscreen>
 </iframe>
+</div>
 
 ### Vacuum pump
 
-<img src="Media/pump.jpg" width="300" height="200" alt="Description of image">
+<img src="Media/pump.jpg" width="250" height="180" alt="Description of image">
 
 ## Row 3 {data-height="200," data-padding="15"}
 
