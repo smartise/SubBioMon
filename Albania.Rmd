@@ -1,0 +1,57 @@
+---
+title: "<center>Albania<center>"
+output:
+  flexdashboard::flex_dashboard:
+    orientation: row
+    vertical_layout: scroll
+    theme: 
+      version: 4
+      bootswatch: darkly
+      
+---
+
+```{r, echo=FALSE, results='hide',message=FALSE}
+library(plotly)
+library(DT)
+library(htmltools)
+library(reactable)
+library(bslib)
+library(thematic)
+```
+
+AUG_2024 {data-navmenu="Sulfure cave"}
+=====================================
+
+## Row 1 {data-height=400, data-padding=15}
+
+### Map
+
+### Note
+
+## Row 2 {data-width=200, data-padding=15}
+
+### NMDS
+
+### Krona
+Note that this Krona plot has been made withe the best blast identity possible. Some of the OTUs did not have good blast using NCBI database. For species presence absence refers to the "Detected species" tab
+
+::: {style="background-color: grey; padding: 20px;"}
+```{r, echo=FALSE, results='asis'}
+htmltools::tags$iframe(
+  src = "ALB/CO1/krona_plot.html",
+  width = "100%",
+  height = "700px",
+  frameborder = "0"
+)
+```
+:::
+
+## Row 3 {data-height=500, data-padding=15}
+
+### Detected species 
+
+```{r, echo=FALSE}
+load("ALB/CO1/DETECT_SPECIES.RDATA")
+datatable(DETECT_SPECIES)
+```
+

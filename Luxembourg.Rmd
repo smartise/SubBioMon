@@ -1,0 +1,20 @@
+---
+title: "<center>Luxembourg<center>"
+output:
+  flexdashboard::flex_dashboard:
+    orientation: row
+    vertical_layout: scroll
+    theme: 
+      version: 4
+      bootswatch: darkly
+      
+---
+
+```{r, echo=FALSE, results='hide',message=FALSE}
+library(plotly)
+library(DT)
+library(htmltools)
+library(reactable)
+library(bslib)
+library(thematic)
+```
