@@ -1,5 +1,5 @@
 ---
-title: "<center>Sampling<center>"
+title: "<center>Sampling V1<center>"
 output:
   flexdashboard::flex_dashboard:
     orientation: row
