@@ -1,5 +1,5 @@
 ---
-title: "<center>Sampling<center>"
+title: "<center>eDNA Protocol<center>"
 output:
   flexdashboard::flex_dashboard:
     orientation: row
@@ -17,6 +17,10 @@ library(reactable)
 library(bslib)
 library(thematic)
 ```
+
+Sampling
+=====================================
+
 ## Row 1 {data-height="100," data-padding="15"}
 
 ### eDNA sampling 
@@ -27,6 +31,7 @@ For the sampling protocol we use the eDNA sampling kit from <a href="https://syl
 ## Row 2 {data-height="450" data-padding="15"}
 
 ### Sampling protocol
+
 ```{r, echo=FALSE}
 knitr::include_url("https://www.youtube.com/embed/mu5TBGr1psM")
 ```
@@ -42,7 +47,26 @@ knitr::include_url("https://www.youtube.com/embed/mu5TBGr1psM")
 The pump is an oil vacuum pump that is initially used to extract oil from cars. It is simply composed of a tank in which you can manually create a vacuum 
 using the manual pump. The pump is composed of a safety valve (1) as well as a pressure gauge (2). The safety valve will allow the air to flow in when the pressure is too high and to avoid the pump to collapse on itself. However, since the pump is build to extract hot oil (that weaken the strength of the tank's wall) and not cold water, this is unlikely to happen and so, the safety valve can be blocked using paraffin allowing the building of a higher pressure. The pressure gauge is usefull to keep track of the pressure inside the tank and have a view of how clogged is the filter. 
 
+eDNA extraction 
+=====================================
+## Row 1 {data-height="100," data-padding="15"}
 
-```{r}
+### Sylphium
 
-```
+The protocol used for eDNA extraction is the deticated protocol from <a href="https://sylphium.com/eng/">Sylphium</a>, accesible <a href="https://drive.google.com/file/d/1fcXxarkHHFZy_1qAkXndvTMQxwztIvZf/view?pli=1">here</a> 
+
+## Row 1 {data-height="600," data-padding="15"}
+
+### eDNA extraction protocol
+
+<embed src="Media/eDNA_protocol.pdf" type="application/pdf" width="100%" height="600px">
+
+### Tips 
+
+Some minor modifications have been made to the main protocol, primarily to concentrate the sample:
+
+- The eDNA pellet is diluted in 10 µl instead of 100 µl.
+
+- Multiple extractions can be performed from a single filter. Typically, 3 ml of conservation buffer can be extracted from the filter, allowing for three extractions. To further concentrate the sample, the 10 µl of eluate from the first extraction is used for the second extraction, followed by the third. This process concentrates the DNA obtained from the 3 ml of extraction buffer into a single 10 µl of eluate.
+
+

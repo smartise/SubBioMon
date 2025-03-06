@@ -7,6 +7,9 @@ output:
       - { title: "Albania",align: left, href: "https://smartise.github.io/SubBioMon/Albania.html" }
       - { title: "Luxembourg",align: left, href: "https://smartise.github.io/SubBioMon/Luxembourg.html" }
       - { title: "Sampling",align: right, href: "https://smartise.github.io/SubBioMon/Sampling.html" }
+      - {href: "mailto:olivier.collard@ulb.be", align: right, icon: fa-envelope }
+      - {href: "https://www.linkedin.com/in/olivier-collard-71639720a/", align: right, icon: fa-linkedin }
+
     orientation: row
     theme: 
       version: 4
