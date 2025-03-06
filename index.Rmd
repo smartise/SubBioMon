@@ -27,10 +27,20 @@ library(thematic)
 ## Row 1 {data-height="100," data-padding="15"}
 ### Welcome
 
-Welcome to the <a href="https://sylphium.com/eng/">Sub-BioMon</a> eDNA report website. 
+Welcome to the <a href="https://www.sub-biomon.net">Sub-BioMon</a> eDNA report website. 
+
+Here is presented all the eDNA data gathered during the Sub-BioMon project. The Sub-BioMon project aim to develop and test approaches to monitor subterranean biodiversity in karst. 
+
+The Biodiversa+ funded project involve differnt partner across Europe: 
+
+- Subterranean Biology Lab (SubBioLab) (University of Ljubljana, SLOVENIA)
+- Evolutionary Biology & Ecology (EBE) lab (Université libre de Bruxelles BELGIUM)
+- Dark World O (Università degli Studi dell'Aquila ITALY), the Eötvös Loránd University (HUNGARY) 
+- National Museum of Natural History (LUXEMBURG), 
+- Emil Racovita Institute of Speleology (Romanian Academy - Cluj-Napoca Branch ROMANIA)
 
 ## Row 2 {data-padding="15"}
-### Map
+### Sampling map
 
 ```{r}
 load("MAP/map.Rdata")
