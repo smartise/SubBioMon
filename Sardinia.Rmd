@@ -3,10 +3,11 @@ title: "<center>Sardinia<center>"
 output:
   flexdashboard::flex_dashboard:
     orientation: row
-    vertical_layout: scroll
+    source_code: embed
     theme: 
       version: 4
-      bootswatch: darkly
+      bootswatch: minty
+runtime: shiny
 ---
 ```{r, echo=FALSE, results='hide',message=FALSE}
 library(plotly)
@@ -16,16 +17,29 @@ library(reactable)
 library(bslib)
 library(thematic)
 library(knitr)
+library(plotly)
+library(shiny)
+library(plyr)
+library(flexdashboard)
+
 ```
+
+<style>
+
+  .graph-container iframe {
+    border: none;
+  }
+</style>
+
 
 SEPT_2024 {data-navmenu="Locoli"}
 =====================================
 
-Column {.sidebar}
------------------------------------------------------------------------
+Inputs {.sidebar}
+-------------------------------------
 
-<button onclick="showGraph('graph1')">28S</button>
-<button onclick="showGraph('graph2')">CO1</button>
+<button type="button" onclick="showGraphs('co1')">Show CO1</button>
+<button type="button" onclick="showGraphs('28s')">Show 28S</button>
 
 
 ## Row 1 {data-height=700, data-padding=15}
@@ -40,63 +54,37 @@ knitr::include_graphics("SARD/cave.png")
 
 Detected species has been calculated by removing every OTU that had less than 90 query coverage and less than 99% pident. The pident treshold has been chosen following Egeter et al. 2022. The coverage treshold has been chosen arbitrarly
 
-## Row 4 {data-height=5, data-padding=15}
+## Row 1 {data-height=2800, data-padding=15}
 
-### <span style="font-size: 24px;">CO1</span>
+### NMDS
+<div id="NMDS_CO1" class="graph-container">
+  <iframe src="SARD/SEPT24/CO1/NMDS.html"></iframe>
+</div>
 
-## Row 2 {data-width=800, data-padding=15}
+<div id="NMDS_28S" class="graph-container" style="display: none;">
+```{r, echo=FALSE}
+# UI: Create an output container
+plotlyOutput("NMDS_28S_plot", height = "800px")
 
-### NMDS 
-
-```{r, echo=FALSE, results='hide',message=FALSE, fig.align='center'}
-thematic::thematic_rmd(font = "auto")
-load("SARD/SEPT24/CO1/NMDS.RData")
-load("SARD/SEPT24/28S/NMDS.RData")
-
-# Render each plot as HTML
-graph1_html <- knit_print(a)
-graph2_html <- knit_print(NMDS_28S)
-
-# Combine into div containers with proper styles
-div1 <- div(id = "graph1", style = "display: block;", HTML(as.character(graph1_html)))
-div2 <- div(id = "graph2", style = "display: none;", HTML(as.character(graph2_html)))
-
-# Display or combine for rendering
-browsable(tagList(div1, div2))
 ```
-
-<script>
-  function showGraph(graphId) {
-    // Hide all graphs
-    document.getElementById('graph1').style.display = 'none';
-    document.getElementById('graph2').style.display = 'none';
-
-    // Show the selected graph
-    document.getElementById(graphId).style.display = 'block';
-  }
-</script>
+</div>
 
 ### Krona
 
-Note that this Krona plot has been made withe the best blast identity possible. Some of the OTUs did not have good blast using NCBI database. For species presence absence refers to the "Detected species" tab
-<br>
+<!-- Embedding two HTML plots -->
+<div id="KRONA_CO1" class="graph-container">
+  <iframe src="SARD/SEPT24/CO1/krona_plot.html"></iframe>
+</div>
 
-::: {style="background-color: grey; padding: 20px;"}
-```{r, echo=FALSE, results='asis'}
-thematic::thematic_rmd(font = "auto")
-htmltools::tags$iframe(
-  src = "SARD/SEPT24/CO1/krona_plot.html",
-  width = "100%",
-  height = "700px",
-  frameborder = "0"
-)
-```
-:::
+<div id="KRONA_28S" class="graph-container" style="display: none;">
+  <iframe src="SARD/SEPT24/28S/krona_plot.html"></iframe>
+</div>
 
-## Row 3 {data-height=700, data-width=600}
+## Row 1 {data-height=1500, data-padding=15}
 
-### Detected Species
+### detected species 
 
+<div id="SPECIES_CO1" class="graph-container">
 ```{r, echo=FALSE}
 thematic::thematic_rmd(font = "auto")
 load("SARD/SEPT24/CO1/DETECT_SPECIES.RDATA")
@@ -106,33 +94,9 @@ datatable(DETECT_SPECIES, options = list(
   scrollX = TRUE# Enable horizontal scrolling for wide tables
 ), width = "10%")
 ```
+</div>
 
-## Row 4 {data-height=5, data-padding=15}
-
-### <span style="font-size: 24px;">28S</span>
-
-## Row 4 {data-height=700, data-padding=15}
-
-### NMDS 
-
-### Krona
-
-::: {style="background-color: grey; padding: 20px;"}
-```{r, echo=FALSE, results='asis'}
-thematic::thematic_rmd(font = "auto")
-htmltools::tags$iframe(
-  src = "SARD/SEPT24/28S/krona_plot.html",
-  width = "100%",
-  height = "700px",
-  frameborder = "0"
-)
-```
-:::
-
-## Row 4 {data-height=700, data-padding=15}
-
-### Detected Species
-
+<div id="SPECIES_28S" class="graph-container" style="display: none;">
 ```{r, echo=FALSE}
 thematic::thematic_rmd(font = "auto")
 load("SARD/SEPT24/28S/DETECT_SPECIES.RDATA")
@@ -142,6 +106,7 @@ datatable(DETECT_SPECIES, options = list(
   scrollX = TRUE# Enable horizontal scrolling for wide tables
 ), width = "10%")
 ```
+</div>
 
 JUL_2024 {data-navmenu="Aqueduct"}
 =====================================
@@ -156,3 +121,34 @@ load("SARD_AQ/JUL/CO1/DETECT_SPECIES.RDATA")
 datatable(DETECT_SPECIES)
 ```
 
+<script>
+  function showGraphs(graphType) {
+    console.log("Switching to:", graphType); // Debugging
+
+    if (graphType === "co1") {
+      document.getElementById("NMDS_CO1").style.display = "block";
+      document.getElementById("NMDS_28S").style.display = "none";
+      document.getElementById("KRONA_CO1").style.display = "block";
+      document.getElementById("KRONA_28S").style.display = "none";
+      document.getElementById("SPECIES_CO1").style.display = "block";
+      document.getElementById("SPECIES_28S").style.display = "none";
+
+
+      // Force reload of iframes
+      document.getElementById("iframe_NMDS_CO1").src += "";
+      document.getElementById("iframe_KRONA_CO1").src += "";
+    } else if (graphType === "28s") {
+      document.getElementById("NMDS_CO1").style.display = "none";
+      document.getElementById("NMDS_28S").style.display = "block";
+      document.getElementById("KRONA_CO1").style.display = "none";
+      document.getElementById("KRONA_28S").style.display = "block";
+      document.getElementById("SPECIES_CO1").style.display = "none";
+      document.getElementById("SPECIES_28S").style.display = "block";
+
+
+      // Force reload of iframes
+      document.getElementById("iframe_NMDS_28S").src += "";
+      document.getElementById("iframe_KRONA_28S").src += "";
+    }
+  }
+</script>

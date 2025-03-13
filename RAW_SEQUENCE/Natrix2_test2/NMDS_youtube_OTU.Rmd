@@ -1,0 +1,325 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+library(vegan)
+library(tidyverse)
+#library(gt)
+#library(gtExtras)
+#library(gtsummary)
+#library(kableExtra)
+#library(grid)
+#library(patchwork)
+library(ggrepel)
+library(broom) #for the function tidy
+```
+
+```{r}
+load("Cleaned/OTU.RData")
+source("theme_plot.R")
+
+```
+```{r}
+OTU <- OTU %>%
+  filter(!grepl("AR", sample),!grepl("AL", sample), !grepl("PAL", sample), !grepl("P3R1", sample), !grepl("P3_", sample))
+```
+
+
+difference in community of species during the non upwellnig season between the species for the same season in Las perlas
+```{r}
+dist <- OTU %>%
+  column_to_rownames("sample")%>%
+  avgdist(sample = 20000)
+
+nmds_meta <- OTU %>% 
+  select(sample)
+
+set.seed(1)
+nmds <- metaMDS(dist) %>%
+  scores() %>%
+  as_tibble(rownames="sample")
+
+nmds_meta_num <- nmds %>%
+  separate(sample, into = c("sample", "replicate"), sep = "_(?=[^_]+$)", remove = FALSE)
+
+```
+
+```{r, calculating the coordination of the species}
+subsample <- OTU %>%
+  pivot_longer(-sample)%>%
+  group_by(name)%>%
+  uncount(value)%>%
+  slice_sample(n = 20000)%>%
+  count(sample, name)%>%
+  pivot_wider(names_from = "name", values_from = "n", values_fill = 0)%>%
+  pivot_longer(-sample)
+
+nmds_shared <- inner_join(subsample, nmds)
+
+cor_x <- nmds_shared %>%
+  nest(data = -name)%>%
+  mutate(cor_x = purrr::map(data, ~cor.test(.x$value, .x$NMDS1, method = "spearman", exact = F) %>%   tidy()))%>%
+  unnest(cor_x)%>%
+  select(name, estimate, p.value)
+
+cor_y <- nmds_shared %>%
+  nest(data = -name)%>%
+  mutate(cor_y = purrr::map(data, ~cor.test(.x$value, .x$NMDS2, method = "spearman", exact = F) %>%   tidy()))%>%
+  unnest(cor_y)%>%
+  select(name, estimate, p.value)
+
+correlation <- inner_join(cor_x, cor_y, by = "name")
+
+correlation %>%
+  filter(p.value.x < 0.0000000000001 | p.value.y < 0.0000000000001)
+high_corr <- correlation
+high_corr <- correlation %>%
+  filter(estimate.x > 0.78 | estimate.x < -0.92 | abs(estimate.y) > 0.85 )
+```
+
+
+```{r}
+centroid <- nmds_meta_num %>%
+  group_by(sample) %>%
+  summarize(NMDS1=mean(NMDS1), NMDS2=mean(NMDS2))
+
+a <-ggplot(nmds_meta_num, aes(x=NMDS1, y=NMDS2, color=sample)) + 
+  stat_ellipse(aes(fill = sample, color = sample), geom = "polygon", alpha = 0.2) +
+  geom_point(data= centroid, size = 5, shape = 21, color = "black", 
+             aes(fill = sample))+
+  #scale_fill_manual(values=c("#4B0055", "#00588B", "#009B95"))+
+  #scale_color_manual(values=c("#4B0055", "#00588B", "#009B95"))+
+  geom_point(alpha = 0.4)
+  geom_segment(data = high_corr, 
+               aes(x = 0, y = 0, xend = estimate.x, yend = estimate.y),
+               arrow = arrow(length = unit(0.1, "cm")), 
+               color = "black", linewidth = 1, inherit.aes = FALSE, alpha = 0.5) +  # Use linewidth instead of size
+  geom_text_repel(data = high_corr, 
+                 aes(x = estimate.x, y = estimate.y, label = name), 
+                 hjust = 1.5, vjust = 1.5, size = 5, inherit.aes = FALSE, 
+                 min.segment.length = 0.001) + 
+  geom_hline(yintercept = 0, linetype="dotted", color="grey") + 
+  geom_vline(xintercept = 0, linetype="dotted", color="grey") +
+  labs(color = "Species", fill = "Species")  +
+            facet_grid(. ~ Locality)+
+  theme_point; a
+  
+print(a)
+```
+
+```{r, adonis}
+new_row <- data.frame(
+  Site = "Las Perlas",           # Example value for Site column
+  Df = NA,                       # Example value for Degrees of Freedom
+  SumOfSquares = NA,             # Example value for Sum of Squares
+  R2 = NA,                       # Example value for R2
+  F.Model = NA,                  # Example value for F.Model
+  p.value = NA,
+  name = NA# Example value for P-value
+)
+
+adonis_lasperlas <- adonis2(dist~nmds_meta$species, permutations = 999)
+adonis_lasperlas <- as.data.frame(adonis_lasperlas)
+adonis_lasperlas$Site <- NA
+colnames(adonis_lasperlas) <- c("Df", "SumOfSquares", "R2", "F.Model", "p.value", "Site")
+adonis_lasperlas$name <- rownames(adonis_lasperlas)
+adonis_lasperlas$F.Model <- as.numeric(adonis_lasperlas$F.Model)
+
+adonis_lasperlas <- adonis_lasperlas %>%
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+adonis_lasperlas <- rbind(new_row, adonis_lasperlas)
+adonis_lasperlas[is.na(adonis_lasperlas)] <- ""
+```
+
+
+difference in community of species during the non upwellnig season between the species for the same season in Coiba 
+```{r}
+wideData1 <- wideData %>%
+  filter(Locality =="Coiba" & Season =="Non-upwelling")
+
+dist <- wideData1 %>%
+  select(-colony, -Locality, -replicate, -Site, -Season, -species, -block) %>%
+  column_to_rownames("ID")%>%
+  avgdist(sample = 2200)
+
+nmds_meta <- wideData1 %>% 
+  select(ID, Locality, Site, Season, species)
+
+set.seed(1)
+nmds <- metaMDS(dist) %>%
+  scores() %>%
+  as_tibble(rownames="ID")
+
+nmds_meta_num <- inner_join(nmds_meta, nmds)
+
+```
+
+```{r, calculating the coordination of the species}
+subsample <- wideData1 %>%
+  select(-colony, -Locality, -replicate, -Site, -Season, -species, -block)%>%
+  pivot_longer(-ID)%>%
+  group_by(ID)%>%
+  uncount(value)%>%
+  slice_sample(n = 2200)%>%
+  count(ID, name)%>%
+  pivot_wider(names_from = "name", values_from = "n", values_fill = 0)%>%
+  pivot_longer(-ID)
+
+nmds_shared <- inner_join(subsample, nmds)
+
+cor_x <- nmds_shared %>%
+  nest(data = -name)%>%
+  mutate(cor_x = purrr::map(data, ~cor.test(.x$value, .x$NMDS1, method = "spearman", exact = F) %>%   tidy()))%>%
+  unnest(cor_x)%>%
+  select(name, estimate, p.value)
+
+cor_y <- nmds_shared %>%
+  nest(data = -name)%>%
+  mutate(cor_y = purrr::map(data, ~cor.test(.x$value, .x$NMDS2, method = "spearman", exact = F) %>%   tidy()))%>%
+  unnest(cor_y)%>%
+  select(name, estimate, p.value)
+
+correlation <- inner_join(cor_x, cor_y, by = "name")
+
+correlation %>%
+  filter(p.value.x < 0.0000000000001 | p.value.y < 0.0000000000001)
+
+high_corr <- correlation %>%
+  filter(estimate.x > 0.78 | estimate.x < -0.92 )
+```
+
+
+```{r}
+centroid <- nmds_meta_num %>%
+  dplyr::group_by(species) %>%
+  summarize(NMDS1=mean(NMDS1), NMDS2=mean(NMDS2))
+
+b <-ggplot(nmds_meta_num, aes(x=NMDS1, y=NMDS2, color=species )) + 
+  stat_ellipse(aes(fill = species, color = species), geom = "polygon", alpha = 0.2) +
+  geom_point(data= centroid, size = 5, shape = 21, color = "black", 
+             aes(fill = species))+
+  scale_fill_manual(values=c("#4B0055", "#00588B", "#009B95"))+
+  scale_color_manual(values=c("#4B0055", "#00588B", "#009B95"))+
+  geom_point(alpha = 0.4) +
+  geom_segment(data = high_corr, 
+               aes(x = 0, y = 0, xend = estimate.x, yend = estimate.y),
+               arrow = arrow(length = unit(0.1, "cm")), 
+               color = "black", linewidth = 1, inherit.aes = FALSE, alpha = 0.5) +  # Use linewidth instead of size
+  geom_text_repel(data = high_corr, 
+                 aes(x = estimate.x, y = estimate.y, label = name), 
+                 hjust = 1.5, vjust = 1.5, size = 5, inherit.aes = FALSE, 
+                 min.segment.length = 0.001) + 
+  geom_hline(yintercept = 0, linetype="dotted", color="grey") + 
+  geom_vline(xintercept = 0, linetype="dotted", color="grey") +
+  labs(color = "Species", fill = "Species")  +
+            facet_grid(. ~ Locality)+
+  theme_point +
+  theme(legend.position = "none"); b
+```
+
+```{r}
+centroid <- nmds_meta_num %>%
+  dplyr::group_by(species) %>%
+  summarize(NMDS1=mean(NMDS1), NMDS2=mean(NMDS2))
+
+b <-ggplot(nmds_meta_num, aes(x=NMDS1, y=NMDS2, color=species )) + 
+  stat_ellipse(aes(fill = species, color = species), geom = "polygon", alpha = 0.2) +
+  geom_point(data= centroid, size = 5, shape = 21, color = "black", 
+             aes(fill = species))+
+  scale_fill_manual(values=c("#4B0055", "#00588B", "#009B95"))+
+  scale_color_manual(values=c("#4B0055", "#00588B", "#009B95"))+
+  geom_point(alpha = 0.4) +
+  geom_hline(yintercept = 0, linetype="dotted", color="grey") + 
+  geom_vline(xintercept = 0, linetype="dotted", color="grey") +
+  labs(color = "Species", fill = "Species")  +
+  facet_grid(. ~ Locality)+
+  theme_point+
+  theme(legend.position = "none"); b
+```
+
+```{r, adonis}
+new_row <- data.frame(
+  Site = "Coiba",           # Example value for Site column
+  Df = NA,                       # Example value for Degrees of Freedom
+  SumOfSquares = NA,             # Example value for Sum of Squares
+  R2 = NA,                       # Example value for R2
+  F.Model = NA,                  # Example value for F.Model
+  p.value = NA,
+  name = NA# Example value for P-value
+)
+
+adonis_Coiba <- adonis2(dist~nmds_meta$species, permutations = 999)
+adonis_Coiba <- as.data.frame(adonis_Coiba)
+adonis_Coiba$Site <- NA
+colnames(adonis_Coiba) <- c("Df", "SumOfSquares", "R2", "F.Model", "p.value", "Site")
+adonis_Coiba$name <- rownames(adonis_Coiba)
+adonis_Coiba$F.Model <- as.numeric(adonis_Coiba$F.Model)
+
+adonis_Coiba <- adonis_Coiba %>%
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+adonis_Coiba <- rbind(new_row, adonis_Coiba)
+adonis_Coiba[is.na(adonis_Coiba)] <- ""
+```
+
+making the table
+```{r}
+fused <- rbind(adonis_Coiba, adonis_lasperlas)
+
+gt_table <- gt(fused) %>%
+  cols_move(columns = c("name","Df" ,"SumOfSquares", "R2", "F.Model", "p.value"), after = "Site") %>%
+  cols_label(
+    Site = "Site",
+    Df = "Degrees of Freedom",
+    SumOfSquares = "Sum of Squares",
+    F.Model = "F",
+    p.value = "P-value",
+    name =""
+  ) %>%
+  fmt("p.value", rows = everything(), fns = ~formatC(.x, format = "f", digits = 3)) %>%
+  
+  # Center alignment for column headers
+  tab_style(
+    style = cell_text(align = "center", weight = "bold"),  # Center alignment for column headers
+    locations = cells_column_labels()  # Specify column labels
+  ) %>%
+  
+  # Center alignment for all row values
+  tab_style(
+    style = cell_text(align = "center"),  # Center alignment for row values
+    locations = cells_body()  # Specify body cells (row values)
+  ) %>%
+  
+  # Center alignment for row groups (if applicable)
+  tab_style(
+    style = cell_text(align = "center"),  # Center alignment for row names
+    locations = cells_row_groups()  # Specify row groups
+  ) %>%
+    tab_style(
+    style = cell_borders(sides = "all", color = "transparent", weight = px(0)),  # No borders
+    locations = list(cells_body(), cells_column_labels(), cells_row_groups())  # Specify locations
+  )%>%  cols_width(
+    everything() ~ px(120)  # Set width for all columns (adjust the value as needed)
+  )
+
+# Display the gt table
+print(gt_table)
+
+gtsave(gt_table, filename = "nmds_table.html")
+
+# Use webshot to save the HTML file as a JPEG
+webshot("nmds_table.html", file = "table.jpg", vwidth = 1000, vheight = 600)
+```
+
+
+```{r, fig.width=14, fig.height=6}
+layout <- (b | a) + 
+          plot_layout(heights = c(0.1))
+layout
+```
+
+
+```{r}
+
+```
+

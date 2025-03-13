@@ -1,0 +1,114 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r, package}
+library(tidyverse)
+library(data.table)
+library(insect)
+library(taxize)
+library(myTAI)
+library(plyr)
+Sys.setenv(ENTREZ_KEY = "80cd88cf6f1cc4afe0eda34b626520f2f709")
+library(dplyr)
+library(KronaR)
+library(phyloseq)
+library(taxonomizr)
+
+```
+
+
+
+```{r}
+load("Cleaned/OTU_species.RData")
+```
+
+```{r}
+final <- final%>%
+  group_by(seqid)%>%
+  mutate(Species = ifelse(pident <= 99, NA, Species))%>%
+  mutate(Genus = ifelse(pident <= 97, NA, Genus))%>%
+  mutate(Family = ifelse(pident <= 95, NA, Family))%>%
+  mutate(Order = ifelse(pident <= 93, NA, Order))%>%
+  mutate(Class = ifelse(pident <= 91, NA, Class))%>%
+  mutate(Phylum = ifelse(pident <= 89, NA, Phylum))%>%
+  mutate(Kingdom= ifelse(pident <= 87, NA, Kingdom))%>%
+  ungroup()%>%
+  select(c(1, 3, 16:23))
+  
+```
+
+```{r}
+sample <- unique(final$sample)
+
+
+for (i in sample) {
+site <- final %>%
+  filter(sample == i)%>%
+  select(-sample)
+output_file <- paste0(i,"_krona_plot.html")
+write.table(site, paste0("krona/",paste0(i,"_krona.tsv")), sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
+}
+
+#system("ktImportText *krona.tsv -o krona_plot.html")
+
+```
+
+
+
+```{r, saving tha data frame to do krona shart }
+result_inner <- result_inner %>% 
+  select(-query) %>% 
+  dplyr::rename(abundance = N) %>%
+  filter(!grepl("uncultured", species, ignore.case = TRUE))
+
+head(result_inner)
+```
+
+```{r, krona chart}
+KronaR::KronaR(result_inner)
+```
+
+```{r}
+library(KronaR)
+importT <-system.file("src/text.txt",package = "KronaR")
+dat <-read.csv(importT,header = FALSE, sep = "\t")
+
+KronaR(result_inner)
+
+```
+
+```{r}
+output_file <- "krona_plot.html"
+write.table(result_inner, "taxonomy_data.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
+
+system("ktImportText taxonomy_data.tsv -o krona_plot.html")
+
+```
+
+```{r, using taxonomizr}
+setnames(taxid, "V18", "query")
+tax <- data.frame(getTaxonomy(taxid$query,'accessionTaxa.sql'))
+tax$query <- rownames(tax)
+result_inner <- merge(taxid, tax, by = "query") 
+
+result_inner <- result_inner %>% 
+  select(-query) %>% 
+  dplyr::rename(abundance = N) %>%
+  filter(!grepl("uncultured", species, ignore.case = TRUE))
+```
+
+```{r}
+tax_raw <- getTaxonomy(taxid$query,'accessionTaxa.sql')
+tax_norm <- normalizeTaxa(tax_raw, c('subspecies','varietas', 'strain', 'NA'))
+```
+
+
+```{r}
+output_file <- "krona_plot.html"
+write.table(result_inner, "taxonomy_data.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
+
+system("ktImportText taxonomy_data.tsv -o krona_plot.html")
+```
+

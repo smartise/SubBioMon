@@ -1,0 +1,10 @@
+name: edna
+title:
+username: subbiomon-edna
+account: subbiomon-edna
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 14234600
+bundleId: 9936805
+url: https://subbiomon-edna.shinyapps.io/edna/
+version: 1

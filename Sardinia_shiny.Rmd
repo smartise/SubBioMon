@@ -1,0 +1,72 @@
+---
+title: "ggplotly geoms"
+author: "Carson Sievert"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    social: menu
+    source_code: embed
+    theme: 
+      version: 4
+      bootswatch: minty
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(plotly)
+library(plyr)
+library(flexdashboard)
+
+# Make some noisily increasing data
+set.seed(955)
+dat <- data.frame(cond = rep(c("A", "B"), each=10),
+                  xvar = 1:20 + rnorm(20,sd=3),
+                  yvar = 1:20 + rnorm(20,sd=3))
+```
+
+Inputs {.sidebar}
+-----------------------------------------------------------------------
+
+```{r}
+selectInput('x', 'Choose dataset', choices = c("CO1", "28S"))
+```
+
+Outputs
+-----------------------------------------------------------------------
+
+### Scatter Chart with geom_point
+
+```{r}
+renderPlotly({
+    # Load appropriate data based on the selected dataset
+    if (input$x == "28S") {
+      load("SARD/SEPT24/28S/NMDS.RData")  # Load 28S data
+      ggplotly(a)  # Render plot
+    } else {
+      load("SARD/SEPT24/CO1/NMDS.RData")  # Load CO1 data
+      ggplotly(a)  # Render plot
+    }
+  })
+```
+library(rsconnect)
+rsconnect::deployApp(
+  appDir = "/Users/oliviercollard/Library/CloudStorage/OneDrive-Personal/OBSIDIAN/Project_Panama/Data/SEQUENCE/eDNA",
+  appFiles = c("Sardinia_shiny.Rmd")
+)
+### geom_smooth Linear Regression
+
+```{r}
+output$html_container <- renderUI({
+  if (input$dataset == "28S") {
+    tags$iframe(src = "SARD/SEPT24/28S/krona_plot.html", width = "100%", height = "600px")
+  } else {
+    tags$iframe(src = "SARD/SEPT24/CO1/krona_plot.html", width = "100%", height = "600px")
+  }
+})
+```
+
+
+### Scatter Chart with geom_point
+
+sd

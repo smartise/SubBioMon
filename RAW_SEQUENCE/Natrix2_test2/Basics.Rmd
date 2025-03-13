@@ -1,0 +1,73 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+data <- load("Cleaned/OTU.RData")
+```
+
+
+```{r}
+
+sampling_coverage <- OTU %>%
+  pivot_longer(-sample)%>%
+  group_by(sample)%>%
+  summarise(n_seqs = sum(value))
+
+moy <- sampling_coverage%>%
+  summarise(n_seqs = sum(n_seqs)/48)
+
+
+sampling_coverage %>%
+  ggplot(aes(x=n_seqs))+
+  geom_histogram()
+```
+the number of sequence is enough
+
+```{r}
+sampling_coverage %>%
+  ggplot(aes(x=1, y=n_seqs))+
+  geom_jitter()+
+  scale_y_log10()
+```
+
+```{r}
+sampling_coverage %>%
+  arrange(n_seqs)%>%
+  ggplot(aes(x=1:nrow(.), y=n_seqs))+
+  geom_line()
+
+sampling_coverage %>%
+  arrange(n_seqs) %>%
+  print(n=20)
+```
+i would say a coverage of 2200 is good 
+```{r}
+shared <- Absolute %>%
+  group_by(ID) %>%
+  mutate(total = sum(absolute)) %>%
+  filter(total > 2200)
+
+```
+
+```{r}
+Absolute %>%
+  filter(ID == "ML5950")
+```
+
+
+```{r goods coverage}
+Absolute %>%
+  group_by(ID) %>%
+  summarize(n_seqs = sum(absolute),
+            n_sings = sum(absolute == 1),
+            goods = 100*(1 - n_sings / n_seqs)) %>%
+  ggplot(aes(x=n_seqs, y=goods))+
+  geom_point()
+```
+
