@@ -45,7 +45,7 @@ knitr::include_url("https://www.youtube.com/embed/mu5TBGr1psM")
 
 The pump is an oil vacuum pump that is initially used to extract oil from cars. It is simply composed of a tank in which you can manually create a vacuum using the manual pump. The pump is composed of a **safety valve (1)** as well as a **pressure gauge (2)**. The safety valve will allow the air to flow in when the pressure is too high and to avoid the pump to collapse on itself. However, since the pump is build to extract hot oil (that weaken the strength of the tank's wall) and not cold water, this is unlikely to happen and so, the safety valve can be blocked using paraffin allowing the building of a higher pressure. The pressure gauge is usefull to keep track of the pressure inside the tank and have a view of how clogged is the filter.
 
-# eDNA extraction
+# eDNA extraction {data-navmenu="Laboratory"}
 
 ## Row 1 {data-height="100," data-padding="15"}
 
@@ -67,7 +67,7 @@ Some minor modifications have been made to the main protocol, primarily to conce
 
 -   Multiple extractions can be performed from a single filter. Typically, 3 ml of conservation buffer can be extracted from the filter, allowing for three extractions. To further concentrate the sample, the 10 µl of eluate from the first extraction is used for the second extraction, followed by the third. This process concentrates the DNA obtained from the 3 ml of extraction buffer into a single 10 µl of eluate.
 
-# PCR {data-navmenu="eDNA sequencing"}
+# PCR {data-navmenu="Laboratory"}
 
 ## Row 1 {data-height="100," data-padding="15"}
 
@@ -87,7 +87,7 @@ The PCR protocol is a drop in the lid protocol. barcodes primers are firstly dri
 
 <embed src="Media/2-step PCR protocol_JF2.pdf" type="application/pdf" width="100%" height="600px">
 
-# PCR cleanup {data-navmenu="eDNA sequencing"}
+# PCR cleanup {data-navmenu="Laboratory"}
 
 ## Row 1 {data-height="100,\"" data-padding="15"}
 
@@ -145,7 +145,7 @@ SPRI beads are magnetic beads that perform a sequence size selection based on th
 
 Since we want to remove primers dimers (around 150 bp), the optimal beads ratio for the protocol is 0.65. However if you want to remove bigger sequence size to remove non-specific amplification, you are free to use different ratio.
 
-# Sequencing {data-navmenu="eDNA sequencing"}
+# Sequencing {data-navmenu="Laboratory"}
 
 ## Row 3 {data-height="100," data-padding="15"}
 

@@ -19,10 +19,10 @@ library(plyr)
 library(flexdashboard)
 
 # Make some noisily increasing data
-set.seed(955)
-dat <- data.frame(cond = rep(c("A", "B"), each=10),
-                  xvar = 1:20 + rnorm(20,sd=3),
-                  yvar = 1:20 + rnorm(20,sd=3))
+```
+
+```{r}
+
 ```
 
 Inputs {.sidebar}
@@ -36,6 +36,8 @@ Outputs
 -----------------------------------------------------------------------
 
 ### Scatter Chart with geom_point
+https://github.com/smartise/SubBioMon/tree/main/SARD/SEPT24/CO1
+
 
 ```{r}
 renderPlotly({
@@ -44,7 +46,7 @@ renderPlotly({
       load("SARD/SEPT24/28S/NMDS.RData")  # Load 28S data
       ggplotly(a)  # Render plot
     } else {
-      load("SARD/SEPT24/CO1/NMDS.RData")  # Load CO1 data
+      read.csv("https://github.com/smartise/SubBioMon/tree/main/SARD/SEPT24/CO1/NMDS.RData")  # Load CO1 data
       ggplotly(a)  # Render plot
     }
   })

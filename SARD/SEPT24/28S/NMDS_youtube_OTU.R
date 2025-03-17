@@ -9,7 +9,7 @@ this.dir <- dirname(parent.frame(2)$ofile)
 setwd(this.dir)
 
 load("PHYL.Rdata")
-source("~/OneDrive/OBSIDIAN/Project_Panama/Data/SEQUENCE/eDNA/theme_plot.R")
+#source("~/OneDrive/OBSIDIAN/Project_Panama/Data/SEQUENCE/eDNA/theme_plot.R")
 
 plot_bar(LOCO, x="sample_Sample")
 

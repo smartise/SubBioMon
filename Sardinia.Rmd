@@ -2,12 +2,9 @@
 title: "<center>Sardinia<center>"
 output:
   flexdashboard::flex_dashboard:
-    orientation: row
-    source_code: embed
     theme: 
       version: 4
       bootswatch: minty
-runtime: shiny
 ---
 ```{r, echo=FALSE, results='hide',message=FALSE}
 library(plotly)
@@ -23,26 +20,11 @@ library(plyr)
 library(flexdashboard)
 
 ```
-
-<style>
-
-  .graph-container iframe {
-    border: none;
-  }
-</style>
-
-
-SEPT_2024 {data-navmenu="Locoli"}
+SEPT_2024_CO1 {data-navmenu="Locoli"}
 =====================================
 
-Inputs {.sidebar}
--------------------------------------
+## Row 2 {data-height="450" data-padding="15"}
 
-<button type="button" onclick="showGraphs('co1')">Show CO1</button>
-<button type="button" onclick="showGraphs('28s')">Show 28S</button>
-
-
-## Row 1 {data-height=700, data-padding=15}
 
 ### Map
 
@@ -50,41 +32,8 @@ Inputs {.sidebar}
 knitr::include_graphics("SARD/cave.png")
 ```
 
-### Note
-
-Detected species has been calculated by removing every OTU that had less than 90 query coverage and less than 99% pident. The pident treshold has been chosen following Egeter et al. 2022. The coverage treshold has been chosen arbitrarly
-
-## Row 1 {data-height=2800, data-padding=15}
-
-### NMDS
-<div id="NMDS_CO1" class="graph-container">
-  <iframe src="SARD/SEPT24/CO1/NMDS.html"></iframe>
-</div>
-
-<div id="NMDS_28S" class="graph-container" style="display: none;">
-```{r, echo=FALSE}
-# UI: Create an output container
-plotlyOutput("NMDS_28S_plot", height = "800px")
-
-```
-</div>
-
-### Krona
-
-<!-- Embedding two HTML plots -->
-<div id="KRONA_CO1" class="graph-container">
-  <iframe src="SARD/SEPT24/CO1/krona_plot.html"></iframe>
-</div>
-
-<div id="KRONA_28S" class="graph-container" style="display: none;">
-  <iframe src="SARD/SEPT24/28S/krona_plot.html"></iframe>
-</div>
-
-## Row 1 {data-height=1500, data-padding=15}
-
 ### detected species 
 
-<div id="SPECIES_CO1" class="graph-container">
 ```{r, echo=FALSE}
 thematic::thematic_rmd(font = "auto")
 load("SARD/SEPT24/CO1/DETECT_SPECIES.RDATA")
@@ -94,9 +43,43 @@ datatable(DETECT_SPECIES, options = list(
   scrollX = TRUE# Enable horizontal scrolling for wide tables
 ), width = "10%")
 ```
-</div>
 
-<div id="SPECIES_28S" class="graph-container" style="display: none;">
+## Row 2 {data-height="450" data-padding="15"}
+
+### NMDS
+
+```{r, echo=FALSE}
+load("SARD/SEPT24/CO1/NMDS.Rdata")
+ggplotly(a)
+```
+
+
+### Krona
+
+```{r, echo=FALSE, results='asis'}
+htmltools::tags$iframe(
+  src = "SARD/SEPT24/CO1/krona_plot.html",
+  width = "100%",
+  height = "500px",
+  frameborder = "0"
+)
+```
+
+SEPT_2024_28S {data-navmenu="Locoli"}
+=====================================
+
+
+## Row 2 {data-height="450" data-padding="15"}
+
+
+### Map
+
+```{r, echo=FALSE,message=FALSE, fig.align='center'}
+knitr::include_graphics("SARD/cave.png")
+```
+
+### detected species 
+
 ```{r, echo=FALSE}
 thematic::thematic_rmd(font = "auto")
 load("SARD/SEPT24/28S/DETECT_SPECIES.RDATA")
@@ -106,12 +89,33 @@ datatable(DETECT_SPECIES, options = list(
   scrollX = TRUE# Enable horizontal scrolling for wide tables
 ), width = "10%")
 ```
-</div>
+
+## Row 2 {data-height="450" data-padding="15"}
+
+### NMDS
+
+```{r, echo=FALSE}
+load("SARD/SEPT24/28S/NMDS.Rdata")
+ggplotly(a)
+```
+
+
+### Krona
+
+```{r, echo=FALSE, results='asis'}
+htmltools::tags$iframe(
+  src = "SARD/SEPT24/28S/krona_plot.html",
+  width = "100%",
+  height = "700px",
+  frameborder = "0"
+)
+```
+
+
 
 JUL_2024 {data-navmenu="Aqueduct"}
 =====================================
 
-## Row 3 {data-height=500, data-padding=15}
 
 ### Detected species
 
@@ -120,35 +124,3 @@ JUL_2024 {data-navmenu="Aqueduct"}
 load("SARD_AQ/JUL/CO1/DETECT_SPECIES.RDATA")
 datatable(DETECT_SPECIES)
 ```
-
-<script>
-  function showGraphs(graphType) {
-    console.log("Switching to:", graphType); // Debugging
-
-    if (graphType === "co1") {
-      document.getElementById("NMDS_CO1").style.display = "block";
-      document.getElementById("NMDS_28S").style.display = "none";
-      document.getElementById("KRONA_CO1").style.display = "block";
-      document.getElementById("KRONA_28S").style.display = "none";
-      document.getElementById("SPECIES_CO1").style.display = "block";
-      document.getElementById("SPECIES_28S").style.display = "none";
-
-
-      // Force reload of iframes
-      document.getElementById("iframe_NMDS_CO1").src += "";
-      document.getElementById("iframe_KRONA_CO1").src += "";
-    } else if (graphType === "28s") {
-      document.getElementById("NMDS_CO1").style.display = "none";
-      document.getElementById("NMDS_28S").style.display = "block";
-      document.getElementById("KRONA_CO1").style.display = "none";
-      document.getElementById("KRONA_28S").style.display = "block";
-      document.getElementById("SPECIES_CO1").style.display = "none";
-      document.getElementById("SPECIES_28S").style.display = "block";
-
-
-      // Force reload of iframes
-      document.getElementById("iframe_NMDS_28S").src += "";
-      document.getElementById("iframe_KRONA_28S").src += "";
-    }
-  }
-</script>
