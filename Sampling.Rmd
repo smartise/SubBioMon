@@ -19,6 +19,38 @@ library(bslib)
 library(thematic)
 ```
 
+# SubBio-Mon monitoring plan 
+
+## Row 1 {data-height="100," data-padding="15"}
+
+### Monitoring plant 
+
+The aim of the eDNA monitoring plan is to sample at least 2 caves. Each caves should be sample for at least 3 different habitats (For instance, stream, syphon and gour) and for 2 hydrologic conditions for a total of 12 samples per country. 
+
+## Row 1 {data-height="500," data-padding="15"}
+
+### Plan 
+
+<img src="Media/Plan.png" alt="Description of image" width="250" height="180"/>
+
+### Note 
+
+For each cave, different aspects are needed:
+
+- Filter at least 5 liters of water per site (some areas show very low amounts of DNA even at 10 liters of water, so this amount is somewhat necessary).
+
+- A topographic map of the cave with the sampling site indicated.
+
+- The location of the cave.
+
+- If possible, physicochemical measurements:
+
+  - Conductivity (mS/cm)
+  - Redox potential (mV)
+  - Temperature (°C)
+  - pH
+  - Dissolved oxygen (mg/L)
+
 # Sampling
 
 ## Row 1 {data-height="100," data-padding="15"}
@@ -30,7 +62,7 @@ For the sampling protocol we use the eDNA sampling kit from <a href="https://syl
 ## Row 2 {data-height="450" data-padding="15"}
 
 ### Sampling protocol
-j
+
 ```{r, echo=FALSE}
 knitr::include_url("https://www.youtube.com/embed/mu5TBGr1psM")
 ```
@@ -44,6 +76,18 @@ knitr::include_url("https://www.youtube.com/embed/mu5TBGr1psM")
 ### More info about the pump.
 
 The pump is an oil vacuum pump that is initially used to extract oil from cars. It is simply composed of a tank in which you can manually create a vacuum using the manual pump. The pump is composed of a **safety valve (1)** as well as a **pressure gauge (2)**. The safety valve will allow the air to flow in when the pressure is too high and to avoid the pump to collapse on itself. However, since the pump is build to extract hot oil (that weaken the strength of the tank's wall) and not cold water, this is unlikely to happen and so, the safety valve can be blocked using paraffin allowing the building of a higher pressure. The pressure gauge is usefull to keep track of the pressure inside the tank and have a view of how clogged is the filter.
+
+## Row 4 {data-height="400," data-padding="15"}
+
+### Sending Filter 
+
+<img src="Media/FILTRE2.jpg" alt="Description of image" width="250" height="180"/>
+
+### Note
+
+- After filtering, it is important to keep the SAME buffer syringe that you used for the sampling and put it together with the filter. Since i need to extract the buffer for extraction, this allow me to reuse the buffer syringe and avoid the use of an extra sterile syringe. 
+
+- After filtering, try to preserve the filter in a cold place and in dark. This is not mandatory but is preferable for transport if possible. 
 
 # eDNA extraction {data-navmenu="Laboratory"}
 
@@ -160,6 +204,7 @@ For the sequencing we use the <a href="https://nanoporetech.com/document/ligatio
 <embed src="Media/ligation-sequencing-amplicons-sqk-lsk114-document-checklist-PromethION-en-ACDE_9163_v114_revW_30Jan2025-35.pdf" type="application/pdf" width="100%" height="600px">
 
 ### Note 
+
 
 
 
